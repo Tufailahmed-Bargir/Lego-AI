@@ -1,4 +1,4 @@
-# Lego
+# Lego : legacy code converter
 
 #### An interactive web portal to convert the legacy code (outdated code ) into modern code
 ![Screenshot 2024-09-02 223534](https://github.com/user-attachments/assets/61f4e488-f134-40a8-b0cf-80e2b170a00a)
@@ -21,16 +21,38 @@
 - LLM Model- **Gemini 1.5 flash**
 
 ## How to run?
+### Manual setup
+1. Fork this repo and make a clone of it and go to the **cd lego** directory
+   ```
+   cd lego
+   ```
+3. make **pnpm install**
+4. ```
+   pnpm install
+   ```
+5. Create a **.env** file and paste your Gemini api key in .env file in **GEMINI_API_KEY='AIxxxxxxxxxxxxxxxxxxxxxxxxxxxx'**
+6. Run/ Start localhost by (`pnpm run dev`)
+```
+pnpm run dev
+```
+7. then visit to **`localhost:3000`** in your browser.
 
-1. Fork this repo and make a clone of it and go to the `cd lego` directory
-2. make `pnpm install`
-3. Create a **.env** file and paste your Gemini api key in .env file in **GEMINI_API_KEY='AIxxxxxxxxxxxxxxxxxxxxxxxxxxxx'**
-4. Run/ Start localhost by (`pnpm run dev`)
-5. then go to **`localhost/3000`** in your browser.
+### Docker setup
+1) Build the image using  **Docker build -t (image-name) :(tag).**
+   
+**Example** 
+```
+Docker build -t lego:v1
+```
+3) and run the image using **Docker run -p 3000:3000 <image-name>**
 
+   **Example** 
+```
+Docker run -p 3000:3000 lego:v1
+```
 ## Want to Contribute?
 
-contribution are always welcomed.
+contributions are always welcomed.
 
 ## Need help?
 

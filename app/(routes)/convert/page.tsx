@@ -50,6 +50,7 @@ const LegacyCodeConverter = () => {
                 Select Legacy Code Language
               </label>
               <input
+              required
                 name="legacyLang"
                 id="legacyLang"
                 placeholder="Ex: Cobol, Delphi, Perl etc"
@@ -61,6 +62,7 @@ const LegacyCodeConverter = () => {
                 Select Modern Code Language
               </label>
               <input
+              required
                 name="ModernLang"
                 id="ModernLang"
                 placeholder="Ex: C, C++, Python, JAVA"
@@ -70,6 +72,7 @@ const LegacyCodeConverter = () => {
           </div>
           <div className="grid gap-4">
             <textarea
+            required
               className="w-full p-4 border border-gray-300 rounded resize-none"
               rows={10}
               name="code"

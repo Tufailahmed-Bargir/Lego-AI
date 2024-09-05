@@ -10,7 +10,7 @@
 
 ## Successfully converted code with documenation
 
-![Screenshot 2024-09-01 131449](https://github.com/user-attachments/assets/0fd651f3-e0b4-46c3-9f83-87f0b6fbd2c5)
+![image](https://github.com/user-attachments/assets/98b1b960-eec0-4552-a5cf-eda52a68b2a6)
 
 ## Tech Stack Used
 

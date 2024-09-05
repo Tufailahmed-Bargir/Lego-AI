@@ -1,9 +1,9 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
- 
+
 import { convertSchemaInput } from "@/lib/Schemas";
-// actual code 
+// actual code
 let model: ReturnType<typeof GoogleGenerativeAI.prototype.getGenerativeModel>;
 const initializeGemini = async () => {
   if (!model) {
@@ -31,7 +31,6 @@ const createChatSession = async () => {
   });
 };
 
- 
 export async function convertCode(dataToSend: any) {
   console.log("hello from server");
   console.log("parsedData", dataToSend);

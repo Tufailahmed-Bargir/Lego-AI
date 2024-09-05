@@ -9,9 +9,9 @@ export default function ConvertPage() {
   const [outputCode, setOutputCode] = useState("");
   const [documentation, setDocumentation] = useState("");
   const [showForm, setShowForm] = useState(true);
-const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-   toast.success("Text copied to clipboard!");
+    toast.success("Text copied to clipboard!");
   };
 
   const pageAction = async (formData: FormData) => {
@@ -46,13 +46,12 @@ const copyToClipboard = (text: string) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-r from-pink-50 to-blue-50">
-       <Toaster position="top-right" closeButton richColors />
+      <Toaster position="top-right" closeButton richColors />
       {showForm ? (
         <form
           action={pageAction}
           className="bg-white p-4 sm:p-6 rounded-lg shadow-2xl w-full max-w-3xl"
         >
-         
           <div className="flex flex-col sm:flex-row justify-between mb-4 gap-4">
             <div className="flex flex-col w-full sm:w-1/2">
               <label className="mb-2 font-semibold">

@@ -3,7 +3,7 @@ import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import Overview from "./components/Overview";
 import Hero from "./components/hero";
-
+import { Toaster } from "sonner";
 export default function Home() {
   return (
     <>
@@ -13,6 +13,7 @@ export default function Home() {
         <Overview />
         <Features />
         <Footer />
+        <Toaster />
       </div>
     </>
   );

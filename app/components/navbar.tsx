@@ -41,7 +41,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="#overview"
+              href="/data"
               className="font-semibold hover:text-primary hover:text-blue-700"
             >
               Overview

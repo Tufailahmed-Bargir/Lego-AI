@@ -1,10 +1,11 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import { convertSchemaInput } from "@/lib/Schemas";
-// actual code
+import { prisma } from "@/lib/prisma";
+
 let model: ReturnType<typeof GoogleGenerativeAI.prototype.getGenerativeModel>;
+
 const initializeGemini = async () => {
   if (!model) {
     const apiKey = process.env.GEMINI_API_KEY || "";
@@ -34,8 +35,8 @@ const createChatSession = async () => {
 export async function convertCode(dataToSend: any) {
   console.log("hello from server");
   console.log("parsedData", dataToSend);
+
   const validatedFields = convertSchemaInput.safeParse(dataToSend);
-  console.log("hello from server 2");
 
   if (!validatedFields.success) {
     return {
@@ -43,7 +44,9 @@ export async function convertCode(dataToSend: any) {
       message: "Please correct the errors and submit again",
     };
   }
+
   console.log("hello from server 3");
+
   const { legacyLanguage, modernLanguage, code } = validatedFields.data;
   const chatSession = await createChatSession();
 
@@ -53,7 +56,7 @@ export async function convertCode(dataToSend: any) {
       into modern code language ${modernLanguage}. 
       Provide the entire code with no explanation.
 
-      NOTE: FIRST ANALYZE THE CODE AS PER THE LANGUAGE SYNTAX AND THEN CONVERT IT. IF THE CODE IS NOT FOLLOWING THE CORRECT SYNTAX OF THE PROVIDED LANGUAGE,  THEN SAY "INVALID CODE" THEN DON'T MAKE ANY CONVERSIONS, NOR DOCUMENTATION.
+      NOTE: FIRST ANALYZE THE CODE AS PER THE LANGUAGE SYNTAX AND THEN CONVERT IT. IF THE CODE IS NOT FOLLOWING THE CORRECT SYNTAX OF THE PROVIDED LANGUAGE, THEN SAY "INVALID CODE" AND DO NOT MAKE ANY CONVERSIONS NOR DOCUMENTATION.
     `);
 
     const responseText = convertedCode.response
@@ -69,6 +72,17 @@ export async function convertCode(dataToSend: any) {
       .text()
       .replace(/(`|##|\*\*|\*\*\*|###)/g, "");
 
+    // Store data in the database
+    await prisma.history.create({
+      data: {
+        legacy_language: legacyLanguage,
+        legacy_code: code,
+        modern_language: modernLanguage,
+        converted_code: responseText,
+        documentation: responseText2,
+      },
+    });
+
     return {
       success: true,
       generatedCode: responseText.trim(),
@@ -76,9 +90,5 @@ export async function convertCode(dataToSend: any) {
     };
   } catch (error) {
     console.error("Error in code conversion:", error);
-    return {
-      success: false,
-      message: "An error occurred during code conversion",
-    };
   }
 }

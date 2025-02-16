@@ -21,7 +21,7 @@ model User{
   image String?
   history History[]
 }
-model History{
+model History {
   id String @id @default(cuid())
   legacy_language String
   legacy_code String
@@ -29,7 +29,7 @@ model History{
   converted_code String
   documentation String
   author User @relation(fields: [authorId], references: [id])
-  authorId String
+  authorId String  // Make it required again
   createdAT DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

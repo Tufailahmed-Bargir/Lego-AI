@@ -1,37 +1,23 @@
-import CodeHistoryCard from "@/app/components/HistoryCard";
+import HistoryCard from "@/app/components/HistoryCard";
+import { prisma } from "@/lib/prisma";
 
-const historyData = [
-  {
-    id: 1,
-    legacyLang: "COBOL",
-    modernLang: "Python",
-    legacyCode: "IDENTIFICATION DIVISION.\nPROGRAM-ID. HELLO-WORLD.",
-    convertedCode: "print('HELLO, WORLD!')",
-    documentation: "A simple COBOL to Python conversion.",
-    createdAt: "2025-02-15T10:00:00Z",
-  },
-  {
-    id: 2,
-    legacyLang: "Fortran",
-    modernLang: "JavaScript",
-    legacyCode:
-      "      PROGRAM HELLO\n      PRINT *, 'HELLO, WORLD!'\n      END",
-    convertedCode: "console.log('HELLO, WORLD!');",
-    documentation: "A simple Fortran to JavaScript conversion.",
-    createdAt: "2025-02-16T12:00:00Z",
-  },
-];
+const HistoryPage = async ({ params }: { params: { id: string } }) => {
+  const data = await prisma.history.findFirst({
+    where: {
+      id: params.id,
+    },
+  });
 
-const HistoryDetailPage = ({ params }: { params: string }) => {
-  const history = historyData.find((item) => item.id === Number(params.id));
-
-  if (!history) return <p>History not found</p>;
+  if (!data) {
+    return <div> No history</div>;
+  }
 
   return (
     <div className="p-6 mt-20">
-      <CodeHistoryCard history={history} />
+      {/* @ts-ignore */}
+      <HistoryCard history={data} />
     </div>
   );
 };
 
-export default HistoryDetailPage;
+export default HistoryPage;

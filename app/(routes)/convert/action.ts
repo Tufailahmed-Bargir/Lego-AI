@@ -3,6 +3,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { convertSchemaInput } from "@/lib/Schemas";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 let model: ReturnType<typeof GoogleGenerativeAI.prototype.getGenerativeModel>;
 
@@ -73,6 +75,23 @@ export async function convertCode(dataToSend: any) {
       .replace(/(`|##|\*\*|\*\*\*|###)/g, "");
 
     // Store data in the database
+    const session = await getServerSession();
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 201 });
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    });
+    if (!user) {
+      return NextResponse.json(
+        {
+          msg: "user not found",
+        },
+        { status: 201 },
+      );
+    }
     await prisma.history.create({
       data: {
         legacy_language: legacyLanguage,
@@ -80,11 +99,13 @@ export async function convertCode(dataToSend: any) {
         modern_language: modernLanguage,
         converted_code: responseText,
         documentation: responseText2,
+        authorId: user.id,
       },
     });
 
     return {
       success: true,
+      msg: "success",
       generatedCode: responseText.trim(),
       documentation: responseText2 ? responseText2.trim() : "",
     };

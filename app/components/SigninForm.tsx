@@ -1,7 +1,5 @@
 "use client";
 
-import { X } from "lucide-react";
-import { useEffect, useState } from "react";
 import img from "@/public/goole.png";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -11,6 +9,7 @@ import { SignupFormData, signupSchema } from "@/lib/Schemas";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function SigninPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -45,12 +44,7 @@ export default function SigninPage() {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center pt-10">
       <Toaster position="bottom-right" richColors duration={1000} closeButton />
-      <div className="mt-10 mb-10 relative w-4/5 max-w-md bg-white rounded-xl p-6 md:p-8">
-        {/* Close button */}
-        <button className="absolute right-4 top-4 text-gray-500 hover:text-gray-700">
-          <X className="h-6 w-6" />
-        </button>
-
+      <div className="mt-10 mb-10 relative w-4/5 max-h-1/2 max-w-md bg-white rounded-xl p-6 md:p-8">
         {/* Heading */}
         <h1 className="text-3xl font-serif text-center mb-8">
           Signup to Lego-Ai

@@ -34,8 +34,8 @@ export default function ConvertPage() {
       console.log("Data is valid" + parsedData.data);
       const result = await convertCode(parsedData.data);
       console.log(result);
-      if (result?.Errors) {
-        toast.error(result?.message);
+      if (result.data.success) {
+        toast.error(result.msg);
       } else {
         setOutputCode(result?.generatedCode || "");
         setDocumentation(result?.documentation || "");

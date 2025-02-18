@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="bg-gradient-to-r from-pink-50 to-blue-50">
         {/* <Navbar /> */}
         <Hero />
-        {JSON.stringify(session)}
+
         <Overview />
         <Features />
         <Footer />

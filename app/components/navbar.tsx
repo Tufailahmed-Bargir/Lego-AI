@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import AuthButton from "./authBotton";
 
-export default function Navbar() {
+export default function Navbar({ currentPath }: any) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -26,28 +26,26 @@ export default function Navbar() {
         {/* Navigation Menu */}
         <div className="flex flex-1 justify-center">
           <div id="nav-menu" className="hidden md:flex gap-9 items-center">
-            <Link
-              href="/convert"
-              className="font-semibold hover:text-primary hover:text-blue-700"
-            >
+            <Link href="/convert" className="font-semibold hover:text-blue-700">
               Convert Code
             </Link>
-
             <Link
-              href="#features"
-              className="font-semibold hover:text-primary hover:text-blue-700"
+              href={currentPath === "/" ? "/features" : "/#features"}
+              className="font-semibold hover:text-blue-700"
             >
               Features
             </Link>
-
             <Link
-              href="/data"
-              className="font-semibold hover:text-primary hover:text-blue-700"
+              href={currentPath === "/" ? "/overview" : "/#overview"}
+              className="font-semibold hover:text-blue-700"
             >
               Overview
             </Link>
           </div>
         </div>
+
+        {/* Login Button (Top-right) */}
+        <AuthButton />
 
         {/* Mobile Toggle Button */}
         <button
@@ -71,6 +69,7 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {/* Mobile Menu */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-40 ${
           isOpen ? "block" : "hidden"
@@ -80,7 +79,7 @@ export default function Navbar() {
       <div
         className={`fixed inset-y-0 left-0 bg-white w-64 p-5 z-50 transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out bg-pink-to-r bg-gradient-to-r from-pink-50 to-blue-50`}
+        } transition-transform duration-300 ease-in-out`}
       >
         <button onClick={closeMenu} className="text-2xl p-2 mb-5">
           <svg
@@ -107,20 +106,31 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link href="#overview">
-              <p className="hover:text-blue-500" onClick={closeMenu}>
-                Overview
-              </p>
+            <Link
+              href={currentPath === "/" ? "/#overview" : "/#overview"}
+              onClick={closeMenu}
+            >
+              <p className="hover:text-blue-500">Overview</p>
             </Link>
           </li>
           <li>
-            <Link href="#features">
-              <p className="hover:text-blue-500" onClick={closeMenu}>
-                Features
-              </p>
+            <Link
+              href={currentPath === "/" ? "/#features" : "/#features"}
+              onClick={closeMenu}
+            >
+              <p className="hover:text-blue-500">Features</p>
             </Link>
           </li>
         </ul>
+
+        {/* Mobile Login Button */}
+        <div className="mt-4">
+          <Link href="/login">
+            <button className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+              Login
+            </button>
+          </Link>
+        </div>
       </div>
     </>
   );

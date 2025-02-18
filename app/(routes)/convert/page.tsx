@@ -1,46 +1,50 @@
 "use client";
+
 import { useState } from "react";
-import { convertCode } from "./action";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import { toast, Toaster } from "sonner";
-import SubmitButton from "@/app/components/Button";
-import { convertSchemaInput } from "@/lib/Schemas";
+
+import { convertSchemaInput, ConvertType } from "@/lib/Schemas";
+import axios from "axios";
 
 export default function ConvertPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(convertSchemaInput),
+  });
   const [outputCode, setOutputCode] = useState("");
   const [documentation, setDocumentation] = useState("");
   const [showForm, setShowForm] = useState(true);
-  const copyToClipboard = (text: string) => {
+  const [loading, setLoading] = useState(false);
+
+  const copyToClipboard = (text: any) => {
     navigator.clipboard.writeText(text);
     toast.success("Text copied to clipboard!");
   };
 
-  const pageAction = async (formData: FormData) => {
-    const data = {
-      legacyLanguage: formData.get("legacyCodeLang"),
-      modernLanguage: formData.get("modernCodeLang"),
-      code: formData.get("code"),
-    };
-    console.log("frontned data", data);
-    const parsedData = convertSchemaInput.safeParse(data);
-    console.log("parsedData", parsedData);
-    if (!parsedData.success) {
-      let errorMessage = "";
-      parsedData.error.issues.forEach((issue, index) => {
-        errorMessage += `${issue.path[0]} : ${issue.message}\n`;
-      });
-      toast.error(errorMessage);
-      console.log("Invalid data", errorMessage);
-    } else {
-      console.log("Data is valid" + parsedData.data);
-      const result = await convertCode(parsedData.data);
-      console.log(result);
-      if (result.data.success) {
-        toast.error(result.msg);
-      } else {
-        setOutputCode(result?.generatedCode || "");
-        setDocumentation(result?.documentation || "");
+  const onSubmit = async (data: ConvertType) => {
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/convert", data);
+
+      if (response.data.success) {
+        toast.success("Code converted successfully!");
+        setOutputCode(response.data.generatedCode);
+        setDocumentation(response.data.documentation);
         setShowForm(false);
+      } else {
+        toast.error("Error converting the code!");
       }
+    } catch (error) {
+      toast.error("Server error! Please try again.");
+    } finally {
+      setLoading(false); // ✅ Stop loading
     }
   };
 
@@ -49,7 +53,7 @@ export default function ConvertPage() {
       <Toaster position="top-right" closeButton richColors />
       {showForm ? (
         <form
-          action={pageAction}
+          onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-4 sm:p-6 rounded-lg shadow-2xl w-full max-w-3xl"
         >
           <div className="flex flex-col sm:flex-row justify-between mb-4 gap-4">
@@ -58,34 +62,49 @@ export default function ConvertPage() {
                 Select Legacy Code Language
               </label>
               <input
-                name="legacyCodeLang"
-                id="legacyCodeLang"
+                {...register("legacyLanguage")}
                 placeholder="Ex: Cobol, Delphi, Perl etc"
                 className="p-2 bg-white border border-gray-300 rounded w-full"
               />
+              {errors.legacyLanguage && (
+                <p className="text-red-500 text-sm">
+                  {errors.legacyLanguage.message}
+                </p>
+              )}
             </div>
             <div className="flex flex-col w-full sm:w-1/2">
               <label className="mb-2 font-semibold">
                 Select Modern Code Language
               </label>
               <input
-                name="modernCodeLang"
-                id="modernCodeLang"
+                {...register("modernLanguage")}
                 placeholder="Ex: C, C++, Python, JAVA"
                 className="p-2 bg-white border border-gray-300 rounded w-full"
               />
+              {errors.modernLanguage && (
+                <p className="text-red-500 text-sm">
+                  {errors.modernLanguage.message}
+                </p>
+              )}
             </div>
           </div>
           <div className="grid gap-4">
             <textarea
+              {...register("code")}
               className="w-full p-4 border border-gray-300 rounded resize-none"
               rows={10}
-              name="code"
-              id="code"
               placeholder="Your legacy code here"
             ></textarea>
+            {errors.code && (
+              <p className="text-red-500 text-sm">{errors.code.message}</p>
+            )}
           </div>
-          <SubmitButton />
+          <button
+            className="mt-4 w-full p-2 bg-black text-white rounded hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            type="submit"
+          >
+            {loading ? "Converting..." : "Convert"}
+          </button>
         </form>
       ) : (
         <div className="mt-10 bg-white p-4 sm:p-6 rounded-lg shadow-2xl w-full max-w-6xl">

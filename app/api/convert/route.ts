@@ -4,53 +4,55 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { convertSchemaInput } from "@/lib/Schemas";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-let model: ReturnType<typeof GoogleGenerativeAI.prototype.getGenerativeModel>;
-
-const initializeGemini = async () => {
-  if (!model) {
-    const apiKey = process.env.GEMINI_API_KEY || "";
-    const genAI = new GoogleGenerativeAI(apiKey);
-    model = await genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
-  }
-  return model;
-};
-
-// Helper function to create a chat session
-const createChatSession = async () => {
-  const model = await initializeGemini();
-  return model.startChat({
-    generationConfig: {
-      temperature: 1,
-      topP: 0.95,
-      topK: 64,
-      maxOutputTokens: 500,
-      responseMimeType: "text/plain",
-    },
-    history: [],
-  });
-};
-
-export async function convertCode(dataToSend: any) {
-  console.log("hello from server");
-  console.log("parsedData", dataToSend);
-
-  const validatedFields = convertSchemaInput.safeParse(dataToSend);
-
-  if (!validatedFields.success) {
-    return {
-      Errors: validatedFields.error.flatten().fieldErrors,
-      message: "Please correct the errors and submit again",
-    };
-  }
-
-  const { legacyLanguage, modernLanguage, code } = validatedFields.data;
-  const chatSession = await createChatSession();
-
+export async function POST(req: NextRequest) {
   try {
+    const data = await req.json();
+    let model: ReturnType<
+      typeof GoogleGenerativeAI.prototype.getGenerativeModel
+    >;
+
+    const initializeGemini = async () => {
+      if (!model) {
+        const apiKey = process.env.GEMINI_API_KEY || "";
+        const genAI = new GoogleGenerativeAI(apiKey);
+        model = await genAI.getGenerativeModel({
+          model: "gemini-1.5-flash",
+        });
+      }
+      return model;
+    };
+
+    // Helper function to create a chat session
+    const createChatSession = async () => {
+      const model = await initializeGemini();
+      return model.startChat({
+        generationConfig: {
+          temperature: 1,
+          topP: 0.95,
+          topK: 64,
+          maxOutputTokens: 500,
+          responseMimeType: "text/plain",
+        },
+        history: [],
+      });
+    };
+
+    console.log("data recied is", data);
+
+    const validatedFields = convertSchemaInput.safeParse(data);
+
+    if (!validatedFields.success) {
+      return NextResponse.json({
+        Errors: validatedFields.error.flatten().fieldErrors,
+        message: "Please correct the errors and submit again",
+      });
+    }
+
+    const { legacyLanguage, modernLanguage, code } = validatedFields.data;
+    const chatSession = await createChatSession();
+
     const convertedCode = await chatSession.sendMessage(`
       Convert this legacy code ${code} written in ${legacyLanguage} 
       into modern code language ${modernLanguage}. 
@@ -101,12 +103,12 @@ export async function convertCode(dataToSend: any) {
       },
     });
 
-    return {
+    return NextResponse.json({
       success: true,
       msg: "success",
       generatedCode: responseText.trim(),
       documentation: responseText2 ? responseText2.trim() : "",
-    };
+    });
   } catch (error) {
     console.error("Error in code conversion:", error);
   }

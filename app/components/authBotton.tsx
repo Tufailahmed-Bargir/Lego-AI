@@ -5,7 +5,6 @@ export default function AuthButton() {
   const { data: session } = useSession();
 
   const handleSubmit = async () => {
-    alert("Button clicked");
     await signOut({ callbackUrl: "/" });
   };
 

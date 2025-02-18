@@ -41,8 +41,8 @@ export default function ConvertPage() {
       } else {
         toast.error("Error converting the code!");
       }
-    } catch (error) {
-      toast.error("Server error! Please try again.");
+    } catch (error: any) {
+      toast.error("Server error! Please try again.", error.message);
     } finally {
       setLoading(false); // ✅ Stop loading
     }

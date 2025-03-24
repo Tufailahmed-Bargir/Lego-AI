@@ -1,4 +1,4 @@
-import HistoryCard from "@/app/components/HistoryCard";
+import HistoryCard from "@/app/pages/HistoryCard";
 import { prisma } from "@/lib/prisma";
 
 const HistoryPage = async ({ params }: { params: { id: string } }) => {

@@ -1,4 +1,4 @@
-import HistoryList from "@/app/components/HIstoryList";
+import HistoryList from "@/app/pages/HIstoryList";
 
 export default function HistoryPage({ params }: { params: string }) {
   return (

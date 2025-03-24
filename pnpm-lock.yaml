@@ -111,7 +111,7 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       tailwindcss:
-        specifier: ^3.4.1
+        specifier: ^3.4.10
         version: 3.4.10
       typescript:
         specifier: ^5

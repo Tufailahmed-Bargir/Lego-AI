@@ -14,7 +14,7 @@ export default function HeroSection() {
             Transform legacy code into modern, maintainable code with AI
           </h1>
           <p className="mb-8 text-lg text-gray-600">
-            Logo AI analyzes your legacy codebase and intelligently converts it
+            Loge AI analyzes your legacy codebase and intelligently converts it
             to modern standards, making it easier to maintain, extend, and
             scale.
           </p>

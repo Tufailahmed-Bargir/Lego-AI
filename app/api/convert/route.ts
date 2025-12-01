@@ -5,6 +5,7 @@ import { convertSchemaInput } from "@/lib/Schemas";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { log } from "node:console";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,9 +17,11 @@ export async function POST(req: NextRequest) {
     const initializeGemini = async () => {
       if (!model) {
         const apiKey = process.env.GEMINI_API_KEY || "";
+        console.log("api key is", apiKey);
+
         const genAI = new GoogleGenerativeAI(apiKey);
         model = await genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: "gemini-2.5-flash",
         });
       }
       return model;
@@ -39,7 +42,7 @@ export async function POST(req: NextRequest) {
       });
     };
 
-    console.log("data recied is", data);
+    console.log("data received is", data);
 
     const validatedFields = convertSchemaInput.safeParse(data);
 

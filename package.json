@@ -7,11 +7,11 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
     "prettier": "pnpm exec prettier . --write ",
     "prepare": "husky"
   },
   "dependencies": {
+    "@google/genai": "^1.30.0",
     "@google/generative-ai": "^0.17.1",
     "@hookform/resolvers": "^4.1.0",
     "@icons-pack/react-simple-icons": "^10.0.0",
